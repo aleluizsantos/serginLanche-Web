@@ -1,0 +1,17 @@
+.imageVisibleMobile img {
+    height: 50px;
+    padding-right: 15px;
+}
+.measureUnid {
+    position: absolute;
+    right: 27px;
+    top: 36px;
+    z-index: 1;
+    font-weight: 600;
+}
+.imgProduct {
+    width: 100%;
+    /* border-radius: 20%; */
+    /* vertical-align: middle; */
+    /* margin-right: 10px;  */
+}
