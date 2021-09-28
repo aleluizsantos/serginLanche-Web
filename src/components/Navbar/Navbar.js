@@ -63,7 +63,7 @@ const NavbarHeader = (props) => {
   // };
 
   const getBrand = () => {
-    let brandName = "Beer Truck Club";
+    let brandName = "Sergin Lanhces";
     listRoutes.map((prop, key) => {
       // Verifica se o url selecionada e pega o Name da Page
       //http://localhost/dashboard

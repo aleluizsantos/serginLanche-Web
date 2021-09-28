@@ -442,7 +442,7 @@ const DetailsMyOrder = (props) => {
                       size="sm"
                       onClick={() =>
                         handleMessageWhatsapp(
-                          `🍔 Olá ${myOrder.name} tudo bem. %0ASomos do Beer Truck Clubk.`
+                          `🍔 Olá ${myOrder.name} tudo bem. %0ASomos do Sergin Lanches.`
                         )
                       }
                     >

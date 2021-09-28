@@ -128,7 +128,7 @@ const Login = (props) => {
               )}
               <CardTitle tag="h4">Sign-In</CardTitle>
               <p className="card-category">
-                Bem vindo ao sistema Beer Truck Club
+                Bem vindo ao sistema Sergin Lanhces
               </p>
             </CardHeader>
             <CardBody>

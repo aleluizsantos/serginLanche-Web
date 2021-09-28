@@ -93,7 +93,7 @@ const UserClient = () => {
   // Abrir whatsapp para iniciar uma conversa
   const showWhatsapp = (user) => {
     const phone = user.phone.replace(/([^\d])+/gim, "");
-    const message = `🍔 Olá ${user.name} somos da Beer Truck Club!!`;
+    const message = `🍔 Olá ${user.name} somos do Sergin Lanhces!!`;
     // window.location.href = `whatsapp://send/?phone=55${phone}&text=${message}&app_absent=0`;
     window.location.href = `https://api.whatsapp.com/send?phone=55${phone}&text=${message}`;
   };
