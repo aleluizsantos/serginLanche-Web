@@ -23,8 +23,8 @@ class PrintCoupom extends Component {
           {/* <img src={imgLogo} alt="logo" style={{ width: 80 }} /> */}
           <span>Sergin Lanches</span>
           <br />
-          <p>Rua xxx, xxx, Centro, Jales/SP</p>
-          <p>(17) xxx</p>
+          <p>Rua Otávio Graziani, 926, Centro, Jales/SP</p>
+          <p>(17) 99654-9885</p>
           <span>CUPOM NÃO FISCAL</span>
         </div>
 

@@ -28,6 +28,14 @@
   margin: 0 15px;
 }
 
+#page-signin .version {
+  position: absolute;
+  right: 35px;
+  bottom: 20px;
+  color: #c6c6c6;
+  font-size: 12px;
+}
+
 @media (max-width: 770px) {
   #page-signin .signinImg {
     display: none;

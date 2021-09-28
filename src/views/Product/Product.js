@@ -138,18 +138,18 @@ const Product = () => {
     }
     return <span>{value ? "Promotion" : "Normal"}</span>;
   };
-  //Redirecionar para a página de Cagastro de novo produto
+  // Redirecionar para a página de Cagastro de novo produto
   const goToAddNewProduct = () => {
     history.push({ pathname: "productNew" });
   };
-  //Redireciona para a pagina Produto para editar-lo
+  // Redireciona para a pagina Produto para editar-lo
   const goToEditProduct = (product) => {
     history.push({
       pathname: "/productNew",
       state: product,
     });
   };
-  //Abre o modal
+  // Abre o modal
   const handleShowModal = (product) => {
     setIdProdSelected(product.id);
     setProductSelected(product);
@@ -201,7 +201,6 @@ const Product = () => {
     setDataProduct(newDataProduct);
     upgradeProductVisibleApp(item);
   };
-
   // Atualizar o produto Visivel no aplicativo
   const upgradeProductVisibleApp = async (product) => {
     const data = new FormData();

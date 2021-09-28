@@ -336,6 +336,7 @@ const ProductCategory = () => {
         break;
     }
   };
+  // Selecionar um adicional
   const handleSelectedAdditional = (selectedAdditional, action) => {
     clearFormState();
     switch (action) {
@@ -372,6 +373,7 @@ const ProductCategory = () => {
     const dataTypeAdditional = {
       description: formState.values.description,
       manySelected: formState.values.manySelected || false,
+      limitAdditional: formState.values.limitAdditional,
     };
 
     // Validadação de dados correta
@@ -452,10 +454,352 @@ const ProductCategory = () => {
       }
     }
   };
+  // Ativar visible typeAdditional
+  const handleShowVisibleTypeAdditional = async (itemTypeAdditional) => {
+    const data = {
+      ...itemTypeAdditional,
+      typeAdditionVisible: !itemTypeAdditional.typeAdditionVisible,
+    };
+    updateTypeAdditional(data).then((response) => {
+      const changeTypeAddicional = typeAdditional.map((item) =>
+        item.id === response.id ? response : item
+      );
+      setTypeAdditional(changeTypeAddicional);
+    });
+  };
 
   return (
     <div className="content">
-      {/* MODAL: ADICIONAR/EDITAR CATEGORIA */}
+      {/* CATEGORIA */}
+      <Row>
+        <Col md="12">
+          <Card>
+            <CardHeader>
+              <CardTitle tag="h4">Categorias de Produtos</CardTitle>
+              <div>
+                <Button
+                  className="btn"
+                  outline
+                  size="sm"
+                  onClick={handleNewCategory}
+                >
+                  <i className="fa fa-plus" /> Nova Categoria
+                </Button>
+                <Button
+                  className="btn"
+                  outline
+                  size="sm"
+                  onClick={() => history.push({ pathname: "productNew" })}
+                >
+                  <i className="fa fa-plus" /> Novo Produto
+                </Button>
+              </div>
+            </CardHeader>
+            <CardBody>
+              <Table responsive>
+                <thead className="text-primary">
+                  <tr>
+                    <th>Image</th>
+                    <th>Categoria</th>
+                    <th>Qtd. produto na categoria</th>
+                    <th style={{ textAlign: "center" }}>Ações</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {categorys.map((item, idx) => (
+                    <tr key={idx}>
+                      <td>
+                        <img
+                          className="avatar"
+                          src={item.image_url}
+                          alt={item.name}
+                        />
+                      </td>
+                      <td>
+                        <img
+                          style={{
+                            height: 28,
+                            paddingRight: 10,
+                            cursor: "pointer",
+                          }}
+                          src={item.categoryVisible ? imgMobile : imgNoMobile}
+                          alt="mobile"
+                          onClick={() => handleChangeVisibleApp(item)}
+                        />
+                        <span
+                          style={{ cursor: "pointer" }}
+                          onClick={() => handleSelectCategoy(item, "edit")}
+                        >
+                          {item.name}
+                        </span>
+                      </td>
+                      <td>{item.TotalProduct}</td>
+                      <td>
+                        <div className="groupButton">
+                          <Button
+                            className="btn-round btn-icon"
+                            color="danger"
+                            outline
+                            size="sm"
+                            onClick={() => handleSelectCategoy(item, "delete")}
+                          >
+                            <i className="fa fa-trash" />
+                          </Button>
+                          <Button
+                            className="btn-round btn-icon"
+                            color="info"
+                            outline
+                            size="sm"
+                            onClick={() => handleSelectCategoy(item, "edit")}
+                          >
+                            <i className="fa fa-edit" />
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+              {isLoading && (
+                <div className="isloading">
+                  <Spinner color="#f1f1f1" size="md" />
+                </div>
+              )}
+            </CardBody>
+            <CardFooter>
+              <p>
+                <span style={{ paddingRight: "25px" }}>
+                  Quantidade de categorias: <strong>{categorys.length}</strong>
+                </span>
+                <span>
+                  Total de produtos: <strong>{totalProduct}</strong>
+                </span>
+              </p>
+            </CardFooter>
+          </Card>
+        </Col>
+      </Row>
+      {/* TIPO DE ADICIONAIS */}
+      <Row>
+        <Col md="12">
+          <Card>
+            <CardHeader>
+              <CardTitle tag="h4">Tipos de Adicionais</CardTitle>
+              <Label>
+                São os tipos de adicionais que irão aparecer nos produtos
+              </Label>
+              <div>
+                <Button
+                  className="btn"
+                  outline
+                  size="sm"
+                  onClick={handleNewTypeAdditional}
+                >
+                  <i className="fa fa-plus" /> Novo tipo
+                </Button>
+              </div>
+            </CardHeader>
+            <CardBody>
+              <Table responsive>
+                <thead className="text-primary">
+                  <tr>
+                    <th style={{ textAlign: "center" }}>Qtd escolha</th>
+                    <th>Tipos</th>
+                    <th style={{ textAlign: "center" }}>Ações</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {typeAdditional.map((item, idx) => (
+                    <tr key={idx}>
+                      <td style={{ textAlign: "center" }}>
+                        <img
+                          style={{ height: 50 }}
+                          src={
+                            item.manySelected ? imgMultChoice : imgUniqueChoice
+                          }
+                          alt="icone unique choice"
+                        />
+                      </td>
+
+                      <td>
+                        <img
+                          style={{
+                            height: 28,
+                            paddingRight: 10,
+                            cursor: "pointer",
+                          }}
+                          src={
+                            item.typeAdditionVisible ? imgMobile : imgNoMobile
+                          }
+                          alt="mobile"
+                          onClick={() => handleShowVisibleTypeAdditional(item)}
+                        />
+                        {item.description}
+                      </td>
+                      <td>
+                        <div className="groupButton">
+                          <Button
+                            className="btn-round btn-icon"
+                            color="danger"
+                            outline
+                            size="sm"
+                            onClick={() =>
+                              handleSelectedTypeAdditional(item, "delete")
+                            }
+                          >
+                            <i className="fa fa-trash" />
+                          </Button>
+                          <Button
+                            className="btn-round btn-icon"
+                            color="info"
+                            outline
+                            size="sm"
+                            onClick={() =>
+                              handleSelectedTypeAdditional(item, "edit")
+                            }
+                          >
+                            <i className="fa fa-edit" />
+                          </Button>
+                          <Button
+                            className="btn-round btn-icon"
+                            color="success"
+                            outline
+                            size="sm"
+                            onClick={() =>
+                              handleSelectedTypeAdditional(
+                                item,
+                                "showAdditional"
+                              )
+                            }
+                          >
+                            <i className="fa fa-forward" />
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </CardBody>
+          </Card>
+        </Col>
+      </Row>
+      {/* LISTA DOS ADICIONAIS */}
+      <Row>
+        {showAdditional.show && (
+          <Col md="12">
+            <Card>
+              <CardHeader>
+                <Button
+                  close
+                  onClick={() =>
+                    setShowAdditional({
+                      show: false,
+                      selectedTypeAdditional: {},
+                    })
+                  }
+                />
+                <CardTitle tag="h4">
+                  {showAdditional.selectedTypeAdditional.description}
+                </CardTitle>
+                <img
+                  style={{ height: 50 }}
+                  src={
+                    showAdditional.selectedTypeAdditional.manySelected
+                      ? imgMultChoice
+                      : imgUniqueChoice
+                  }
+                  alt="icone unique choice"
+                />
+                <Label>
+                  {" "}
+                  Neste tipo de adicionais, o usuário poderá escolher
+                  <strong>
+                    {" "}
+                    {showAdditional.selectedTypeAdditional.manySelected
+                      ? " mais de "
+                      : " apenas "}
+                    uma opção
+                  </strong>
+                  .
+                </Label>
+                <div>
+                  <Button
+                    className="btn"
+                    outline
+                    size="sm"
+                    onClick={() =>
+                      handleNewAddicional(
+                        showAdditional.selectedTypeAdditional.id
+                      )
+                    }
+                  >
+                    <i className="fa fa-plus" /> Novo
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardBody>
+                <Table responsive>
+                  <thead className="text-primary">
+                    <tr>
+                      <th>Tipos</th>
+                      <th style={{ textAlign: "right" }}>Preço</th>
+                      <th style={{ textAlign: "center" }}>Ações</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {additional.map((item, idx) => (
+                      <tr key={idx}>
+                        <td>
+                          <i
+                            style={{
+                              paddingRight: 15,
+                              color: "#C6C6C6",
+                            }}
+                            className={"fa fa-chevron-right"}
+                          />{" "}
+                          <span>{item.description}</span>
+                        </td>
+                        <td style={{ textAlign: "right" }}>R$ {item.price}</td>
+                        <td>
+                          <div className="groupButton">
+                            <Button
+                              className="btn-round btn-icon"
+                              color="danger"
+                              outline
+                              size="sm"
+                              onClick={() =>
+                                handleSelectedAdditional(item, "delete")
+                              }
+                            >
+                              <i className="fa fa-trash" />
+                            </Button>
+                            <Button
+                              className="btn-round btn-icon"
+                              color="info"
+                              outline
+                              size="sm"
+                              onClick={() =>
+                                handleSelectedAdditional(item, "edit")
+                              }
+                            >
+                              <i className="fa fa-edit" />
+                            </Button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              </CardBody>
+            </Card>
+          </Col>
+        )}
+      </Row>
+
+      {/* ---------------------------------------------------------------------
+        * MODAL: ADICIONAR/EDITAR CATEGORIA 
+      ------------------------------------------------------------------------*/}
       <ModalView
         title={
           <>
@@ -616,6 +960,49 @@ const ProductCategory = () => {
             </FormGroup>
           </Col>
         </Row>
+        {formState.values.manySelected === true && (
+          <>
+            <Row>
+              <span
+                style={{
+                  fontSize: 12,
+                  paddingTop: 50,
+                  paddingLeft: 20,
+                  paddingBottom: 15,
+                }}
+              >
+                Informe a quantidade limite de escolha do adicional do produto.
+              </span>
+            </Row>
+
+            <Row style={{ display: "flex", alignItems: "center" }}>
+              <Col md="6">
+                <label>Definir o limite:</label>
+              </Col>
+              <Col md="6">
+                <Input
+                  name="limitAdditional"
+                  type="number"
+                  placeholder="ilimitado"
+                  value={formState.values.limitAdditional || ""}
+                  onChange={(event) =>
+                    event.target.value !== "0"
+                      ? handleChange(event)
+                      : setFormState({
+                          ...formState,
+                          values: {
+                            ...formState.values,
+                            limitAdditional: "",
+                          },
+                        })
+                  }
+                  min="0"
+                  max="100"
+                />
+              </Col>
+            </Row>
+          </>
+        )}
       </ModalView>
       {/* MODAL ADICIONAIS */}
       <ModalView
@@ -679,310 +1066,6 @@ const ProductCategory = () => {
           </Col>
         </Row>
       </ModalView>
-
-      {/* CATEGORIA */}
-      <Row>
-        <Col md="12">
-          <Card>
-            <CardHeader>
-              <CardTitle tag="h4">Categorias de Produtos</CardTitle>
-              <div>
-                <Button
-                  className="btn"
-                  outline
-                  size="sm"
-                  onClick={handleNewCategory}
-                >
-                  <i className="fa fa-plus" /> Nova Categoria
-                </Button>
-                <Button
-                  className="btn"
-                  outline
-                  size="sm"
-                  onClick={() => history.push({ pathname: "productNew" })}
-                >
-                  <i className="fa fa-plus" /> Novo Produto
-                </Button>
-              </div>
-            </CardHeader>
-            <CardBody>
-              <Table responsive>
-                <thead className="text-primary">
-                  <tr>
-                    <th>Image</th>
-                    <th>Categoria</th>
-                    <th>Qtd. produto na categoria</th>
-                    <th style={{ textAlign: "center" }}>Ações</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {categorys.map((item, idx) => (
-                    <tr key={idx}>
-                      <td>
-                        <img
-                          className="avatar"
-                          src={item.image_url}
-                          alt={item.name}
-                        />
-                      </td>
-                      <td>
-                        <img
-                          style={{
-                            height: 28,
-                            paddingRight: 10,
-                            cursor: "pointer",
-                          }}
-                          src={item.categoryVisible ? imgMobile : imgNoMobile}
-                          alt="mobile"
-                          onClick={() => handleChangeVisibleApp(item)}
-                        />
-                        <span
-                          style={{ cursor: "pointer" }}
-                          onClick={() => handleSelectCategoy(item, "edit")}
-                        >
-                          {item.name}
-                        </span>
-                      </td>
-                      <td>{item.TotalProduct}</td>
-                      <td>
-                        <div className="groupButton">
-                          <Button
-                            className="btn-round btn-icon"
-                            color="danger"
-                            outline
-                            size="sm"
-                            onClick={() => handleSelectCategoy(item, "delete")}
-                          >
-                            <i className="fa fa-trash" />
-                          </Button>
-                          <Button
-                            className="btn-round btn-icon"
-                            color="info"
-                            outline
-                            size="sm"
-                            onClick={() => handleSelectCategoy(item, "edit")}
-                          >
-                            <i className="fa fa-edit" />
-                          </Button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </Table>
-              {isLoading && (
-                <div className="isloading">
-                  <Spinner color="#f1f1f1" size="md" />
-                </div>
-              )}
-            </CardBody>
-            <CardFooter>
-              <p>
-                <span style={{ paddingRight: "25px" }}>
-                  Quantidade de categorias: <strong>{categorys.length}</strong>
-                </span>
-                <span>
-                  Total de produtos: <strong>{totalProduct}</strong>
-                </span>
-              </p>
-            </CardFooter>
-          </Card>
-        </Col>
-      </Row>
-      {/* TIPO DE ADICIONAIS */}
-      <Row>
-        <Col md="12">
-          <Card>
-            <CardHeader>
-              <CardTitle tag="h4">Tipos de Adicionais</CardTitle>
-              <Label>
-                São os tipos de adicionais que irão aparecer nos produtos
-              </Label>
-              <div>
-                <Button
-                  className="btn"
-                  outline
-                  size="sm"
-                  onClick={handleNewTypeAdditional}
-                >
-                  <i className="fa fa-plus" /> Novo tipo
-                </Button>
-              </div>
-            </CardHeader>
-            <CardBody>
-              <Table responsive>
-                <thead className="text-primary">
-                  <tr>
-                    <th style={{ textAlign: "center" }}>Qtd escolha</th>
-                    <th>Tipos</th>
-                    <th style={{ textAlign: "center" }}>Ações</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {typeAdditional.map((item, idx) => (
-                    <tr key={idx}>
-                      <td style={{ textAlign: "center" }}>
-                        <img
-                          style={{ height: 50 }}
-                          src={
-                            item.manySelected ? imgMultChoice : imgUniqueChoice
-                          }
-                          alt="icone unique choice"
-                        />
-                      </td>
-
-                      <td>{item.description}</td>
-                      <td>
-                        <div className="groupButton">
-                          <Button
-                            className="btn-round btn-icon"
-                            color="danger"
-                            outline
-                            size="sm"
-                            onClick={() =>
-                              handleSelectedTypeAdditional(item, "delete")
-                            }
-                          >
-                            <i className="fa fa-trash" />
-                          </Button>
-                          <Button
-                            className="btn-round btn-icon"
-                            color="info"
-                            outline
-                            size="sm"
-                            onClick={() =>
-                              handleSelectedTypeAdditional(item, "edit")
-                            }
-                          >
-                            <i className="fa fa-edit" />
-                          </Button>
-                          <Button
-                            className="btn-round btn-icon"
-                            color="success"
-                            outline
-                            size="sm"
-                            onClick={() =>
-                              handleSelectedTypeAdditional(
-                                item,
-                                "showAdditional"
-                              )
-                            }
-                          >
-                            <i className="fa fa-forward" />
-                          </Button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </Table>
-            </CardBody>
-          </Card>
-        </Col>
-      </Row>
-      {/* LISTA DOS ADICIONAIS */}
-      <Row>
-        {showAdditional.show && (
-          <Col md="12">
-            <Card>
-              <CardHeader>
-                <Button
-                  close
-                  onClick={() =>
-                    setShowAdditional({
-                      show: false,
-                      selectedTypeAdditional: {},
-                    })
-                  }
-                />
-                <CardTitle tag="h4">
-                  {showAdditional.selectedTypeAdditional.description}
-                </CardTitle>
-                <img
-                  style={{ height: 50 }}
-                  src={
-                    showAdditional.selectedTypeAdditional.manySelected
-                      ? imgMultChoice
-                      : imgUniqueChoice
-                  }
-                  alt="icone unique choice"
-                />
-                <Label>
-                  {" "}
-                  Neste tipo de adicionais, o usuário poderá escolher
-                  <strong>
-                    {" "}
-                    {showAdditional.selectedTypeAdditional.manySelected
-                      ? " mais de "
-                      : " apenas "}
-                    uma opção
-                  </strong>
-                  .
-                </Label>
-                <div>
-                  <Button
-                    className="btn"
-                    outline
-                    size="sm"
-                    onClick={() =>
-                      handleNewAddicional(
-                        showAdditional.selectedTypeAdditional.id
-                      )
-                    }
-                  >
-                    <i className="fa fa-plus" /> Novo
-                  </Button>
-                </div>
-              </CardHeader>
-              <CardBody>
-                <Table responsive>
-                  <thead className="text-primary">
-                    <tr>
-                      <th>Tipos</th>
-                      <th style={{ textAlign: "right" }}>Preço</th>
-                      <th style={{ textAlign: "center" }}>Ações</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {additional.map((item, idx) => (
-                      <tr key={idx}>
-                        <td>{item.description}</td>
-                        <td style={{ textAlign: "right" }}>R$ {item.price}</td>
-                        <td>
-                          <div className="groupButton">
-                            <Button
-                              className="btn-round btn-icon"
-                              color="danger"
-                              outline
-                              size="sm"
-                              onClick={() =>
-                                handleSelectedAdditional(item, "delete")
-                              }
-                            >
-                              <i className="fa fa-trash" />
-                            </Button>
-                            <Button
-                              className="btn-round btn-icon"
-                              color="info"
-                              outline
-                              size="sm"
-                              onClick={() =>
-                                handleSelectedAdditional(item, "edit")
-                              }
-                            >
-                              <i className="fa fa-edit" />
-                            </Button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </Table>
-              </CardBody>
-            </Card>
-          </Col>
-        )}
-      </Row>
     </div>
   );
 };

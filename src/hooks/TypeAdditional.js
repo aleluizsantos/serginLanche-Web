@@ -3,7 +3,13 @@ import { authHeader } from "../services/authHeader";
 
 // TIPOS DE ADICIONAIS
 export const getTypeAdditional = async () => {
-  return await api.get("typeAdditional").then((response) => response.data);
+  const { Authorization } = authHeader();
+
+  return await api
+    .get("typeAdditional", {
+      headers: { Authorization: Authorization },
+    })
+    .then((response) => response.data);
 };
 export const deleteTypeAdditional = async (idTypeAdditional) => {
   const { Authorization } = authHeader();

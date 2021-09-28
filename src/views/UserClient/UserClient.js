@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import validate from "validate.js";
+import { useDispatch } from "react-redux";
 import {
   Card,
   CardHeader,
@@ -23,6 +24,7 @@ import {
   blockedUser,
   sendPushNotification,
 } from "../../hooks";
+import { CLIENT_REGISTERED } from "../../store/Actions/types";
 import { SearchBar, ModalView } from "../../components";
 import icoUsers from "../../assets/img/icoUsers.svg";
 import icoWhatsapp from "../../assets/img/iconWhatsapp.svg";
@@ -46,6 +48,7 @@ const schemaFormPush = {
 };
 
 const UserClient = () => {
+  const dispatch = useDispatch();
   const [dataUserClient, setDataUserClient] = useState([]);
   const [filterUserClient, setFilterUserClient] = useState([]);
   const [selectedUsers, setSelectedUsers] = useState([]);
@@ -59,8 +62,12 @@ const UserClient = () => {
     getUserClient().then((response) => {
       setIsloading(false);
       setDataUserClient(response);
+      dispatch({
+        type: CLIENT_REGISTERED,
+        payload: response.length,
+      });
     });
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     const filterUserClient = dataUserClient.filter((element) => {

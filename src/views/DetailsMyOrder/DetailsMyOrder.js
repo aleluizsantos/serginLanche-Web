@@ -363,7 +363,7 @@ const DetailsMyOrder = (props) => {
   const pageStyle = `
   @page { 
     size: 110mm auto;
-    margin: 0mm;
+    margin: 0 0 0 5px;
   } 
   @media all {
       .pagebreak {

@@ -5,6 +5,7 @@ import validate from "validate.js";
 
 // reactstrap components
 import {
+  Table,
   Button,
   Card,
   CardHeader,
@@ -18,16 +19,20 @@ import {
   Col,
   Spinner,
   FormText,
+  Label,
 } from "reactstrap";
 
 import "./styles.css";
 import { SET_MESSAGE } from "../../store/Actions/types";
 import { Additional } from "../../components";
+import { ModalView } from "../../components";
 import { url } from "../../services/host";
 import imgMobile from "../../assets/img/mobile.png";
 import imgNoMobile from "../../assets/img/noMobile.png";
+import imgPlus from "../../assets/img/icoPlus.gif";
 import {
   getCategorys,
+  getAdditional,
   getMeasureUnit,
   createProduct,
   updateProduct,
@@ -74,12 +79,16 @@ const ProductNew = (props) => {
   const { state } = props.location;
   const dispatch = useDispatch();
   const history = useHistory();
+  const [listAddicionais, setListAdditional] = useState([]);
   const [selectedAddicional, setSelectedAdditional] = useState([]);
+  const [valueDefaultAdditional, setValueDefaultAdditional] = useState([]);
   const [categorys, setCategorys] = useState([]);
   const [measureUnit, setMeasureUnit] = useState([]);
   const [image, setImage] = useState([]);
   const [previewImage, setPreviewImage] = useState(null);
   const [isLoading, setIsloading] = useState(false);
+  const [isModalAdditionalDefault, setIsModalAdditionalDefault] =
+    useState(false);
   const [formState, setFormState] = useState({
     isValid: false,
     values: {},
@@ -97,8 +106,18 @@ const ProductNew = (props) => {
           values: state,
         });
         setPreviewImage(state.image_url);
-        state.additional !== "" &&
+        if (state.additional !== "") {
           setSelectedAdditional(state.additional.split(",").map(Number));
+          getAdditional(state.additional).then((response) =>
+            setListAdditional(response)
+          );
+        }
+
+        if (state.additional !== "") {
+          setValueDefaultAdditional(
+            state.valueDefautAdditional.split(",").map(Number)
+          );
+        }
       }
     })();
     // eslint-disable-next-line
@@ -106,8 +125,10 @@ const ProductNew = (props) => {
 
   useEffect(() => {
     (() => {
-      getCategorys().then((response) => setCategorys(response));
-      getMeasureUnit().then((response) => setMeasureUnit(response));
+      getCategorys().then((response) => {
+        setCategorys(response);
+        getMeasureUnit().then((response) => setMeasureUnit(response));
+      });
     })();
   }, []);
 
@@ -178,11 +199,12 @@ const ProductNew = (props) => {
       ingredient: formState.values.ingredient || "",
       price: parseFloat(formState.values.price),
       promotion: formState.values.promotion || false,
-      additional: formState.values.additional,
       pricePromotion: formState.values.pricePromotion || 0,
       visibleApp: formState.values.visibleApp,
       category_id: formState.values.category_id,
       measureUnid_id: formState.values.measureUnid_id,
+      additional: formState.values.additional,
+      valueDefautAdditional: formState.values.valueDefautAdditional,
     };
 
     // validação dos dados
@@ -198,6 +220,7 @@ const ProductNew = (props) => {
       data.append("visibleApp", dataForm.visibleApp);
       data.append("category_id", dataForm.category_id);
       data.append("measureUnid_id", dataForm.measureUnid_id);
+      data.append("valueDefautAdditional", dataForm.valueDefautAdditional);
 
       // Incluir todas as imagens selecionadas
       image.forEach((img) => {
@@ -229,7 +252,7 @@ const ProductNew = (props) => {
       }
     }
   };
-  //Selecionar itens de adicionais
+  // Selecionar itens de adicionais
   const handleSelectItem = (id) => {
     const alreadySelected = selectedAddicional.findIndex((item) => item === id);
 
@@ -244,6 +267,15 @@ const ProductNew = (props) => {
         },
       });
     } else {
+      const alreadyListAdditional = listAddicionais.some(
+        (addit) => addit.typeAdditional_id === id
+      );
+
+      if (!alreadyListAdditional) {
+        getAdditional(id).then((response) =>
+          setListAdditional([...listAddicionais, ...response])
+        );
+      }
       setSelectedAdditional([...selectedAddicional, id]);
       setFormState({
         ...formState,
@@ -252,6 +284,63 @@ const ProductNew = (props) => {
           additional: [...selectedAddicional, id].toString(),
         },
       });
+    }
+  };
+
+  // Selecionar ou Remover Adicionais padrão
+  const handleSelectAdditionlDefault = (additional) => {
+    // Valor não encontrado retorna -1 | valor localizado retorna 0
+    const alreadySelected = valueDefaultAdditional.findIndex(
+      (item) => item === additional.id
+    );
+    // // Item de selção unica já escolhida
+    const itemUniqueSelected = listAddicionais
+      .filter((addit) => addit.manySelected === false)
+      .filter((item) => valueDefaultAdditional.includes(item.id))
+      .find(
+        (typeAddit) => typeAddit.typeAdditional === additional.typeAdditional
+      );
+
+    if (alreadySelected >= 0) {
+      const filteredItems = valueDefaultAdditional.filter(
+        (item) => item !== additional.id
+      );
+      setValueDefaultAdditional(filteredItems);
+      setFormState({
+        ...formState,
+        values: {
+          ...formState.values,
+          valueDefautAdditional: filteredItems.toString(),
+        },
+      });
+    } else {
+      // Se o adicional é do tipo apenas uma escolha verificar se já foi
+      // escolhido um deste item
+      if (typeof itemUniqueSelected !== "undefined") {
+        const filteredItems = valueDefaultAdditional.filter(
+          (item) => item !== itemUniqueSelected.id
+        );
+        setValueDefaultAdditional([...filteredItems, additional.id]);
+        setFormState({
+          ...formState,
+          values: {
+            ...formState.values,
+            valueDefautAdditional: [...filteredItems, additional.id].toString(),
+          },
+        });
+      } else {
+        setValueDefaultAdditional([...valueDefaultAdditional, additional.id]);
+        setFormState({
+          ...formState,
+          values: {
+            ...formState.values,
+            valueDefautAdditional: [
+              ...valueDefaultAdditional,
+              additional.id,
+            ].toString(),
+          },
+        });
+      }
     }
   };
   // Limpar os campos
@@ -540,11 +629,77 @@ const ProductNew = (props) => {
                         onClick={(id) => handleSelectItem(id)}
                       />
                     </Col>
+                    {selectedAddicional.length > 0 && (
+                      <Col md="12">
+                        <div className="listAdditionalDefault">
+                          <div>
+                            <span>O produto possui adicional padrão.</span>
+                            <p>
+                              Este(s) são os adicionais definidos como padrão
+                              para este produto.
+                            </p>
+                          </div>
+                          <Button
+                            color="dark"
+                            onClick={() => setIsModalAdditionalDefault(true)}
+                          >
+                            Definir
+                          </Button>{" "}
+                        </div>
+                        {listAddicionais.length > 0 ? (
+                          <Table responsive>
+                            <thead>
+                              <tr>
+                                <th style={{ textAlign: "center" }}>#</th>
+                                <th>Descrição</th>
+                                <th>Preço</th>
+                                <th>Categoria</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {listAddicionais.map((item, idx) => {
+                                if (valueDefaultAdditional.includes(item.id)) {
+                                  return (
+                                    <tr key={idx}>
+                                      <td
+                                        onClick={() =>
+                                          handleSelectAdditionlDefault(item)
+                                        }
+                                        style={{
+                                          textAlign: "center",
+                                          cursor: "pointer",
+                                        }}
+                                      >
+                                        <i
+                                          style={{ color: "#B80F0A" }}
+                                          className="fa fa-trash"
+                                        />
+                                      </td>
+                                      <td>{item.description}</td>
+                                      <td>{item.price}</td>
+                                      <td>{item.typeAdditional}</td>
+                                    </tr>
+                                  );
+                                }
+                                return null;
+                              })}
+                            </tbody>
+                          </Table>
+                        ) : (
+                          <div className="titleTableAdditional">
+                            <span>
+                              Não foi definido nenhum adicional padrão para este
+                              produto
+                            </span>
+                          </div>
+                        )}
+                      </Col>
+                    )}
                   </Row>
 
                   <Row>
-                    <CardFooter>
-                      <div className="ml-auto mr-auto">
+                    <CardFooter style={{ width: "100%" }}>
+                      <div className="ml-auto mr-auto footerButton">
                         <Button color="dark" onClick={() => history.goBack()}>
                           Voltar
                         </Button>{" "}
@@ -575,6 +730,63 @@ const ProductNew = (props) => {
           </Col>
         </Row>
       </div>
+
+      {/* MODAL: ADICIONAR/EDITAR CATEGORIA */}
+      <ModalView
+        size="lg"
+        title={
+          <>
+            <img src={imgPlus} alt="icon" style={{ height: 40 }} />
+            <Label>Selecionar adicionais como padrão.</Label>
+          </>
+        }
+        modal={isModalAdditionalDefault}
+        toggle={() => setIsModalAdditionalDefault(!isModalAdditionalDefault)}
+        confirmed={() => setIsModalAdditionalDefault(!isModalAdditionalDefault)}
+      >
+        <div className="contentAddAdditinalDefault">
+          <Table striped bordered hover responsive>
+            <thead>
+              <tr>
+                <th style={{ textAlign: "center" }}>#</th>
+                <th>Descrição</th>
+                <th>Preço</th>
+                <th>Categoria</th>
+              </tr>
+            </thead>
+            <tbody>
+              {listAddicionais.map((item, idx) => {
+                return (
+                  <tr key={idx}>
+                    <td
+                      onClick={() => handleSelectAdditionlDefault(item)}
+                      style={{
+                        textAlign: "center",
+                        cursor: "pointer",
+                        color: "#008000",
+                      }}
+                    >
+                      {valueDefaultAdditional.includes(item.id) && (
+                        <i className="fa fa-check" />
+                      )}
+                    </td>
+                    <td
+                      onClick={() => handleSelectAdditionlDefault(item)}
+                      style={{
+                        cursor: "pointer",
+                      }}
+                    >
+                      {item.description}
+                    </td>
+                    <td>{item.price}</td>
+                    <td>{item.typeAdditional}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </Table>
+        </div>
+      </ModalView>
     </>
   );
 };

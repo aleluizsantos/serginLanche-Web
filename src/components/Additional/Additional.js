@@ -50,14 +50,17 @@ const Additional = ({ selected, onClick }) => {
         Selecione os itens de adicionais disponível para o produto.
       </Label>
       <div className="container">
-        {listAdditional.map((item, idx) => (
-          <ItemAdditional
-            key={idx}
-            item={item}
-            selected={selected}
-            onClick={onClick}
-          />
-        ))}
+        {listAdditional.map(
+          (item, idx) =>
+            item.typeAdditionVisible && (
+              <ItemAdditional
+                key={idx}
+                item={item}
+                selected={selected}
+                onClick={onClick}
+              />
+            )
+        )}
         <ItemNewAdditional />
       </div>
     </>
