@@ -1,5 +1,5 @@
 .container-print {
-    width: 430px; 
+    width: 80mm; 
     display: flex;
     flex-direction: column;
     justify-content: center;

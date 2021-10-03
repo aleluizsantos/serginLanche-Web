@@ -362,7 +362,7 @@ const DetailsMyOrder = (props) => {
 
   const pageStyle = `
   @page { 
-    size: 110mm auto;
+    size: 80mm auto;
     margin: 0 0 0 5px;
   } 
   @media all {
@@ -372,12 +372,16 @@ const DetailsMyOrder = (props) => {
     }
   @media print {
       .pagebreak {
-        page-break-before: always;
+        display: block;
+        page-break-before: auto;
       }
     }
   @media print { 
-    body { 
-      padding: 10px !important; 
+    html, body { 
+      height: initial !important;
+      overflow: initial !important;
+      width: 80mm
+      height: auto
     } 
   }
 `;

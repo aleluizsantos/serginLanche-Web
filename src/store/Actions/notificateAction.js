@@ -12,12 +12,11 @@ export const statusOpenClose = () => (dispatch) => {
       });
     },
     (error) => {
-      const message =
-        error.response.data.error || error.message || error.toString();
+      // const message = error;
 
       dispatch({
         type: SET_MESSAGE,
-        payload: message,
+        payload: "Opss!! Erro na comunição",
       });
     }
   );

@@ -34,18 +34,22 @@ const MyOrders = () => {
   useEffect(() => {
     (() => {
       setIsloading(true);
-      getOrders(typeStatus).then((response) => {
-        const amountProccess = response.filter(
-          (item) => item.statusRequest_id === typeStatusMyOrders.EM_ANASILE
-        ).length;
+      getOrders(typeStatus)
+        .then((response) => {
+          const amountProccess = response.filter(
+            (item) => item.statusRequest_id === typeStatusMyOrders.EM_ANASILE
+          ).length;
 
-        dispatch({
-          type: NEW_ORDERS,
-          payload: amountProccess,
+          dispatch({
+            type: NEW_ORDERS,
+            payload: amountProccess,
+          });
+          setMyOrders(response);
+          setIsloading(false);
+        })
+        .catch((error) => {
+          alert("Opss!!! ocorreu algum erro na comunição com o servidor.");
         });
-        setMyOrders(response);
-        setIsloading(false);
-      });
     })();
   }, [typeStatus, newOrders, dispatch]);
 
