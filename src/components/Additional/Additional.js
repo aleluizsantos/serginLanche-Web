@@ -37,7 +37,12 @@ const Additional = ({ selected, onClick }) => {
     return (
       <div
         className="item-new-additional"
-        onClick={() => history.push({ pathname: "categoryProduct" })}
+        onClick={() =>
+          history.push({
+            pathname: "categoryProduct",
+            state: { showTypeAdditional: true },
+          })
+        }
       >
         <img src={icoPlus} alt="icone unique choice" />
       </div>

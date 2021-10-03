@@ -51,8 +51,8 @@ const typeDelivery = {
 const DetailsMyOrder = (props) => {
   const componetRef = useRef();
   const history = useHistory();
-  const dispatch = useDispatch();
   const { state } = useLocation();
+  const dispatch = useDispatch();
   const [currentPorcent, setCurrentPorcent] = useState(0);
   const [descriptioStatus, setDescriptionStatus] = useState(null);
   const [itemsMyOrders, setItemsMyOrders] = useState([]);

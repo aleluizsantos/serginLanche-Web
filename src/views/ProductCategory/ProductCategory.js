@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import validade from "validate.js";
 import {
   Card,
@@ -66,8 +66,9 @@ const typeForm = {
   ADDITIONAL: "ADDITIONAL",
 };
 
-const ProductCategory = () => {
+const ProductCategory = (props) => {
   const history = useHistory();
+  const { state } = useLocation();
   const dispatch = useDispatch();
   const [categorys, setCategorys] = useState([]);
   const [typeAdditional, setTypeAdditional] = useState([]);
@@ -80,7 +81,9 @@ const ProductCategory = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isModalEditCategory, setIsModalEditCategory] = useState(false);
   const [isModalRemove, setIsModalRemove] = useState(false);
-  const [isModalTypeAddit, setIsModalTypeAddit] = useState(false);
+  const [isModalTypeAddit, setIsModalTypeAddit] = useState(
+    state?.showTypeAdditional || false
+  );
   const [isModalAddit, setIsModalAddit] = useState(false);
   const [totalProduct, setTotalProduct] = useState(0);
 
